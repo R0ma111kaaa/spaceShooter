@@ -5,15 +5,19 @@ import os
 BASE_IMG_PATH = 'data/images/'
 
 
-def load_image(path):
-    img = pygame.image.load(BASE_IMG_PATH + path).convert_alpha()
+def load_image(path, png=False):
+    img = pygame.image.load(BASE_IMG_PATH + path)
+    img = img.convert()
+    # convert to png by delete black background
+    if png:
+        img.set_colorkey((0, 0, 0))
     return img
 
 
-def load_images(path):
+def load_images(path, png=False):
     images = []
     for img_name in os.listdir(BASE_IMG_PATH + path):
-        images.append(load_image(path + '/' + img_name))
+        images.append(load_image(path + '/' + img_name, png))
     return images
 
 
@@ -37,4 +41,4 @@ class Animation:
                 self.done = True
 
     def img(self):
-        return self.images[int(self.frame % self.img_duration)]
+        return self.images[int(self.frame / self.img_duration)]
