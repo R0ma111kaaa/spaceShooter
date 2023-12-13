@@ -7,8 +7,8 @@ Back_Ground = pygame.image.load("data/Design_menu/spacebackground.png")  # Back 
 screen = pygame.display.set_mode()
 main_font = pygame.font.Font("data/Design_menu/font.ttf", 45)
 Button_design = pygame.image.load("data/Design_menu/button2.png")
-Winscreen = pygame.image.load("data/Design_menu/youwin.png")
-LostScreen = "add please not avalable"
+#Winscreen = pygame.image.load("data/Design_menu/youwin.png")
+#dddddddddLostScreen = "add please not avalable"
 
 
 class Main_Menu:
