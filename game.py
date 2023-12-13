@@ -12,7 +12,7 @@ class Game:
         # the surface which user see
         self.screen = pygame.display.set_mode()
         # the surface on which the objects are drawn
-        self.display = pygame.Surface((960, 540))
+        self.display = pygame.Surface((480, 270))
         self.clock = pygame.time.Clock()
         self.running = True
 
@@ -27,17 +27,22 @@ class Game:
 
         self.assets = {
             'empty': load_image('empty.png'),
-            'ground': load_images('ground'),
-            'background': load_image('background.png'),
-            'player': load_image('empty.png', png=True),
-            'player/idle': Animation(load_images('entities/player/idle', png=True), img_dur=6),
-            'player/run': Animation(load_images('entities/player/run', png=True), img_dur=4),
-            'player/jump': Animation(load_images('entities/player/jump', png=True)),
+            'decor': load_images('tiles/decor'),
+            'grass': load_images('tiles/grass'),
+            'large_decor': load_images('tiles/large_decor'),
+            'stone': load_images('tiles/stone'),
+            'background': load_image('background.png', png=False),
+            'player': load_image('empty.png'),
+            'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
+            'player/run': Animation(load_images('entities/player/run'), img_dur=4),
+            'player/jump': Animation(load_images('entities/player/jump')),
         }
 
         self.tilemap = Tilemap(self)
+        self.tilemap.load('map.json')
 
-        self.player = Player(self, (0, 0), self.assets['player'].get_size())
+        self.player = Player(self, (self.tilemap.player_pos[0] * self.tilemap.tile_size,
+                                    self.tilemap.player_pos[1] * self.tilemap.tile_size), (8, 15))
 
     def run(self):
         while self.running:
@@ -45,8 +50,7 @@ class Game:
             self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
-            self.display.fill('white')
-            self.display.blit(self.assets['background'], (0, 0))
+            self.display.blit(pygame.transform.scale(self.assets['background'], self.display.get_size()), (0, 0))
 
             self.tilemap.render(self.display, render_scroll)
 
