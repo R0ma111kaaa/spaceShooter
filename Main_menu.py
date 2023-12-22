@@ -3,7 +3,7 @@ import sys
 from game import Game
 
 BG = pygame.image.load("data/Design_menu/spacebackground.png")
-BG = pygame.transform.scale(BG, (800, 800))
+#BG = pygame.transform.scale(BG, ())
 
 
 
@@ -11,9 +11,11 @@ BG = pygame.transform.scale(BG, (800, 800))
 
 pygame.init()
 pygame.display.set_caption("Main Menu")
-screen = pygame.display.set_mode((800, 800))
+screen = pygame.display.set_mode()
 pygame.display.set_caption("Button!")
 main_font = pygame.font.Font("data/Design_menu/font.ttf", 45)
+BG = pygame.transform.scale(BG, (screen.get_width(), screen.get_height()))
+#screen = pygame.transform.scale(screen, ())
 
 
 class Button:
@@ -47,9 +49,9 @@ button_surface = pygame.image.load("data/Design_menu/button2.png")
 #  button_surface = load_image("button.png")
 button_surface = pygame.transform.scale(button_surface, (500, 200))
 
-start = Button(button_surface, 400, 250, "Start Game", main_font)
-options = Button(button_surface, 400, 450, "Options", main_font)
-quit = Button(button_surface, 400, 650, "Exit", main_font)
+start = Button(button_surface, screen.get_width() // 2, 250, "Start Game", main_font)
+options = Button(button_surface, screen.get_width() // 2, 450, "Options", main_font)
+quit = Button(button_surface, screen.get_width() // 2, 650, "Exit", main_font)
 button_group = [start, options, quit]
 
 game_start = False
