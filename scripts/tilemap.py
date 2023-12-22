@@ -3,7 +3,7 @@ import json
 import pygame
 
 NEIGHBOR_OFFSETS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1))
-PHYSICS_TILES = {'ground'}
+PHYSICS_TILES = {'stone', 'grass'}
 
 
 class Tilemap:
@@ -12,9 +12,7 @@ class Tilemap:
         self.tile_size = tile_size
         self.tilemap = {}
         self.offgrid_tiles = []
-
-        for i in range(-10, 10):
-            self.tilemap[str(i) + ';' + "10"] = {'type': 'ground', 'variant': 0, 'pos': [i, 10]}
+        self.player_pos = (0, 0)
 
     def extract(self, id_pairs, keep=False):
         matches = []
@@ -36,6 +34,9 @@ class Tilemap:
 
         return matches
 
+    def autotile(self):
+        pass
+
     def tiles_around(self, pos):
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
@@ -44,14 +45,6 @@ class Tilemap:
             if check_loc in self.tilemap:
                 tiles.append(self.tilemap[check_loc])
         return tiles
-
-    def load(self, path):
-        f = open(path)
-        map_data = json.load(f)
-        f.close()
-        self.tilemap = map_data['tilemap']
-        self.tile_size = map_data['tile_size']
-        self.offgrid_tiles = map_data['offgrid']
 
     def physics_rects_around(self, pos):
         rects = []
@@ -62,7 +55,7 @@ class Tilemap:
                                          self.tile_size, self.tile_size))
         return rects
 
-    def render(self, surf, offset=(0, 0)):
+    def render(self, surf, offset=(0, 0), player_pos=False):
 
         for tile in self.offgrid_tiles:
             surf.blit(self.game.assets[tile['type']][tile['variant']],
@@ -76,3 +69,25 @@ class Tilemap:
                     surf.blit(self.game.assets[tile['type']][tile['variant']],
                               (tile['pos'][0] * self.tile_size - offset[0],
                                tile['pos'][1] * self.tile_size - offset[1]))
+
+        if player_pos:
+            surf.blit(self.game.assets['player'][0], (self.player_pos[0] * self.tile_size - offset[0],
+                                                      self.player_pos[1] * self.tile_size - offset[1]))
+
+    def load(self, path):
+        file = open(path)
+        map_data = json.load(file)
+        file.close()
+        self.tilemap = map_data['tilemap']
+        self.tile_size = map_data['tile_size']
+        self.offgrid_tiles = map_data['offgrid']
+        self.player_pos = map_data['player_pos']
+
+    def save(self, path):
+        file = open(path, 'w')
+        json.dump({'tilemap': self.tilemap,
+                   'offgrid': self.offgrid_tiles,
+                   'tile_size': self.tile_size,
+                   'player_pos': self.player_pos},
+                  file)
+        file.close()

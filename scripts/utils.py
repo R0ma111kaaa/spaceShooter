@@ -5,7 +5,7 @@ import os
 BASE_IMG_PATH = 'data/images/'
 
 
-def load_image(path, png=False):
+def load_image(path, png=True):
     img = pygame.image.load(BASE_IMG_PATH + path)
     img = img.convert()
     # convert to png by delete black background
@@ -14,7 +14,7 @@ def load_image(path, png=False):
     return img
 
 
-def load_images(path, png=False):
+def load_images(path, png=True):
     images = []
     for img_name in os.listdir(BASE_IMG_PATH + path):
         images.append(load_image(path + '/' + img_name, png))
