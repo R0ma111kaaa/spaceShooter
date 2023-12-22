@@ -6,24 +6,22 @@ pygame.init()
 Back_Ground = pygame.image.load("data/Design_menu/spacebackground.png")  # Back ground
 screen = pygame.display.set_mode()
 main_font = pygame.font.Font("data/Design_menu/font.ttf", 45)
-#main_fontsmaller = pygame.font.Font("data/Design_menu/font.ttf", 35)
-# Back_Ground = pygame.transform.scale(BG, (screen.get_width(), screen.get_height()))
 Button_design = pygame.image.load("data/Design_menu/button2.png")
 
 
 class Main_Menu:
     def __init__(self, screen, Back_Ground, Button_design):
         self.screen = screen
+        # design
         self.Back_Ground = pygame.transform.scale(Back_Ground, (screen.get_width(), screen.get_height()))
         self.button_surface = Button_design  # pygame.image.load("data/Design_menu/button2.png")
         self.button_surface = pygame.transform.scale(self.button_surface, (500, 200))
-        # design
+
         self.start_bt = Button(self.button_surface, self.screen.get_width() // 2, 250, "Start Game", main_font)
         self.options_bt = Button(self.button_surface, self.screen.get_width() // 2, 450, "Options", main_font)
         self.quit_bt = Button(self.button_surface, self.screen.get_width() // 2, 650, "Exit", main_font)
         self.button_group = [self.start_bt, self.options_bt, self.quit_bt]
-        # screen.blit(self.Back_Ground, (0, 0))
-        game_start = False
+        # конец design
         exit = True
         while exit:
             self.screen.blit(self.Back_Ground, (0, 0))
@@ -31,8 +29,8 @@ class Main_Menu:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN: # вход в левел селект
-                    if self.start_bt.checkForInput(pygame.mouse.get_pos()):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.start_bt.checkForInput(pygame.mouse.get_pos()): # вход в левел селект
                         self.level_select()
                     exit = not self.quit_bt.checkForInput(pygame.mouse.get_pos())
 
@@ -43,18 +41,21 @@ class Main_Menu:
 
             pygame.display.update()
 
-                #  level_select(self)
-               #Game().run()
+            #  level_select(self)
+            # Game().run()
         pygame.quit()
 
     def level_select(self):
-        level_bt_design = pygame.image.load("data/Design_menu/level_button.png") # design кнопки для уровня
+        # design
+        level_bt_design = pygame.image.load("data/Design_menu/level_button.png")  # design кнопки для уровня
         level_bt_design = pygame.transform.scale(level_bt_design, (300, 300))
         level1_bt = Button(level_bt_design, int(self.screen.get_width() * 0.3), 250, "level 1", main_font)
         level2_bt = Button(level_bt_design, int(self.screen.get_width() * 0.5), 250, "level 2", main_font)
         level3_bt = Button(level_bt_design, int(self.screen.get_width() * 0.8), 250, "level 3", main_font)
-        exit = Button(level_bt_design,self.screen.get_width() // 2, int(self.screen.get_height() * 0.9), "exit", main_font)
+        exit = Button(level_bt_design, self.screen.get_width() // 2, int(self.screen.get_height() * 0.9), "exit",
+                      main_font)
         level_bt_group = [level1_bt, level2_bt, level3_bt, exit]
+        # end design
         exit2 = True
         while exit2:
             self.screen.blit(self.Back_Ground, (0, 0))
@@ -73,8 +74,6 @@ class Main_Menu:
                 buttons.changeColor(pygame.mouse.get_pos())
             pygame.display.update()
 
-
-#       screen
 
 class Button:
     def __init__(self, image, x_pos, y_pos, text_input, main_font):
@@ -103,39 +102,5 @@ class Button:
             self.text = main_font.render(self.text_input, True, "white")
 
 
-# play = )
-# button_surface = pygame.image.load("data/Design_menu/button2.png")
-# button_surface = load_image("button.png")
-# button_surface = pygame.transform.scale(button_surface, (500, 200))
-
-# start = Button(button_surface, screen.get_width() // 2, 250, "Start Game", main_font)
-# options = Button(button_surface, screen.get_width() // 2, 450, "Options", main_font)
-# quit = Button(button_surface, screen.get_width() // 2, 650, "Exit", main_font)
-# button_group = [start, options, quit]
-
-# game_start = False
-# exit = True
-# while exit:
-#   screen.blit(BG, (0, 0))
-##  for event in pygame.event.get():
-#    if event.type == pygame.QUIT:
-#       pygame.quit()
-#      sys.exit()
-# if event.type == pygame.MOUSEBUTTONDOWN:
-#    game_start = start.checkForInput(pygame.mouse.get_pos())
-#   exit = not quit.checkForInput(pygame.mouse.get_pos())
-
-# screen.fill("white")
-# for buttons in button_group:
-#    buttons.update()
-#   buttons.changeColor(pygame.mouse.get_pos())
-
-# pygame.display.update()
-
-# if game_start:
-#   Game().run()
-#  break
-
-# pygame.quit()
 if __name__ == '__main__':
     Main_Menu(screen, Back_Ground, Button_design)
