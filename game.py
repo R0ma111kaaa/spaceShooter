@@ -72,11 +72,14 @@ class Game:
                         self.movement[0] = False
                     elif event.key == pygame.K_d:
                         self.movement[1] = False
+            if self.player.win_cod == 1:
+               # print("yes")
+                self.running = False
+
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(self.fps)
-        pygame.quit()
 
 
 if __name__ == '__main__':

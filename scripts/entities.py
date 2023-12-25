@@ -1,3 +1,4 @@
+import sys
 import pygame
 
 
@@ -76,6 +77,7 @@ class Player(PhysicsEntity):
         super().__init__(game, 'player', pos, size)
         self.air_time = 0
         self.jumps = 1
+        self.win_cod = 0
 
     def update(self, tilemap, movement=(0, 0)):
         super().update(tilemap, movement=movement)
@@ -98,8 +100,14 @@ class Player(PhysicsEntity):
         elif self.velocity[0] < 0:
             self.velocity[0] = min(self.velocity[0] + 0.1, 0)
 
+
+        if self.pos[0] >= 770 and self.pos[1] >= 65:
+            self.win_cod = 1
+
     def jump(self):
         if self.jumps:
             self.velocity[1] = -3
             self.jumps -= 1
             self.air_time = 5
+
+
