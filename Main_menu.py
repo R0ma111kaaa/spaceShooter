@@ -72,20 +72,6 @@ class Main_Menu:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if level1_bt.checkForInput(pygame.mouse.get_pos()):
                         Game().run()
-                        all_sprites = pygame.sprite.Group()
-                        running = True
-                        end_screen = Endscreen(self.screen, Winscreen)
-                        while running:
-                            for event in pygame.event.get():
-                                if event.type == pygame.QUIT:
-                                    running = False
-                            screen.fill("blue")
-                            all_sprites.draw(screen)
-                            all_sprites.update()
-                            self.clock.tick(60)
-                            pygame.display.flip()
-                            if int(end_screen.rect_x) >= self.screen.get_width():
-                              running = False
 
                     level2 = level2_bt.checkForInput(pygame.mouse.get_pos())
                     level3 = level3_bt.checkForInput(pygame.mouse.get_pos())

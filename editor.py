@@ -1,3 +1,4 @@
+import sys
 import pygame
 
 from scripts.tilemap import Tilemap
@@ -31,6 +32,7 @@ class Editor:
             'stone': load_images('tiles/stone'),
             'decor': load_images('tiles/decor'),
             'large_decor': load_images('tiles/large_decor'),
+            'spawners': load_images('tiles/spawners'),
         }
         self.tiles = list(self.assets)
         self.tile_group = 0
@@ -42,7 +44,7 @@ class Editor:
 
         self.tilemap = Tilemap(self)
         try:
-            self.tilemap.load('map.json')
+            self.tilemap.load('map1.json')
         except FileNotFoundError:
             pass
 
@@ -110,7 +112,7 @@ class Editor:
                     elif event.key == pygame.K_LSHIFT:
                         self.shift = True
                     elif event.key == pygame.K_o:
-                        self.tilemap.save('map.json')
+                        self.tilemap.save('map1.json')
                     elif event.key == pygame.K_t:
                         self.tilemap.autotile()
                         print(f'tilepos: {tile_pos[0] * self.tilemap.tile_size, tile_pos[1] * self.tilemap.tile_size}')

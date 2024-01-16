@@ -36,6 +36,8 @@ class Game:
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump': Animation(load_images('entities/player/jump')),
+            'enemy/idle': Animation(load_images('entities/enemy/idle'), img_dur=6),
+            'enemy/run': Animation(load_images('entities/enemy/run'), img_dur=4),
         }
 
         self.tilemap = Tilemap(self)
@@ -43,6 +45,13 @@ class Game:
 
         self.player = Player(self, (self.tilemap.player_pos[0] * self.tilemap.tile_size,
                                     self.tilemap.player_pos[1] * self.tilemap.tile_size), (8, 15))
+
+        for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1)]):
+            if spawner["variant"] == 0:
+                self.player.pos = spawner['pos']
+            else:
+                print(spawner['pos'], 'enemy')
+
 
     def run(self):
         while self.running:
