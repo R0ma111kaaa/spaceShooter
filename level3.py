@@ -9,6 +9,7 @@ size = fat, up = 500, 500
 screen = pygame.display.set_mode(size)
 fps = 60
 
+
 # extra = image.get_bounding_rect()
 # trimmed_surface = pygame.Surface(extra.size)
 def load_image(name, colorkey=None):
@@ -30,34 +31,36 @@ def load_image(name, colorkey=None):
 
 player_group = pygame.sprite.Group()
 
+
 class Boss(pygame.sprite.Sprite):
-    boss_image = pygame.transform.scale(pygame.image.load("data/images/entities/boss/packman.png"),
+    boss_image = pygame.transform.scale(pygame.image.load("data/images/entities/boss/packman1.png"),
                                         (int(fat * 0.3), int(up * 0.3)))
 
     def __init__(self, screen):
         super().__init__()
         self.screen = screen
-        self.image = pygame.transform.flip(Boss.boss_image,True, False)
+        self.image = pygame.transform.flip(Boss.boss_image, True, False)
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = int(screen.get_width() * 0.7)
         self.rect.y = screen.get_height() // 2
-        self.mouvement = 10
+        self.mouvement = 2
+
     def update(self):
         if self.rect.bottom == self.screen.get_height() or self.rect.top == 0:
             self.mouvement *= -1
         self.rect.y += self.mouvement
 
+
 class Spaceship(pygame.sprite.Sprite):
-    image = pygame.transform.scale(load_image("spaceship.png"), (int(fat * 0.2)
-                                                                 , int(up * 0.2)))
+    image = pygame.transform.scale(load_image("spaceship3.png"), (int(fat * 0.2), int(up * 0.2)))
 
     def __init__(self, screen):
         # НЕОБХОДИМО вызвать конструктор родительского класса Sprite.
         # Это очень важно!!!
         super().__init__()
-        self.image = pygame.transform.flip(Spaceship.image, True, False)
-       # self.mask = pygame.mask.from_surface(self.image)
+        self.image = Spaceship.image
+        # self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.x = 10
         self.rect.y = screen.get_height() // 2
@@ -95,6 +98,7 @@ class Bullet(pygame.sprite.Sprite):
 
         if self.rect.x >= self.screen + 100:
             self.kill()
+
 
 boss_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
