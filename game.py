@@ -1,8 +1,9 @@
 import pygame
 
-from scripts.entities import Player
+from scripts.entities import Player, PhysicsEntity, Enemy
 from scripts.tilemap import Tilemap
 from scripts.utils import load_image, load_images, Animation
+
 
 
 class Game:
@@ -26,13 +27,13 @@ class Game:
         self.fps = 60
 
         self.assets = {
-            'empty': load_image('empty.png'),
+            #'empty': load_image('empty.png'),
             'decor': load_images('tiles/decor'),
             'grass': load_images('tiles/grass'),
             'large_decor': load_images('tiles/large_decor'),
             'stone': load_images('tiles/stone'),
             'background': load_image('background.png', png=False),
-            'player': load_image('empty.png'),
+            'player': load_image('entities/player.png'),
             'player/idle': Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run': Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump': Animation(load_images('entities/player/jump')),
@@ -41,17 +42,17 @@ class Game:
         }
 
         self.tilemap = Tilemap(self)
-        self.tilemap.load('map.json')
+        self.tilemap.load('map2.json')
 
         self.player = Player(self, (self.tilemap.player_pos[0] * self.tilemap.tile_size,
                                     self.tilemap.player_pos[1] * self.tilemap.tile_size), (8, 15))
 
-        for spawner in self.tilemap.extract([("spawners", 0), ("spawners", 1)]):
-            if spawner["variant"] == 0:
-                self.player.pos = spawner['pos']
-            else:
-                print(spawner['pos'], 'enemy')
-
+       # self.enemies = []
+        #for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
+         #   if spawner['variant'] == 0:
+         #       self.player.pos = spawner['pos']
+         #   else:
+          #      self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
 
     def run(self):
         while self.running:

@@ -4,6 +4,17 @@ import pygame
 
 NEIGHBOR_OFFSETS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1))
 PHYSICS_TILES = {'stone', 'grass'}
+AUTOTILE_MAP = {
+    tuple(sorted([(1, 0), (0, 1)])): 0,
+    tuple(sorted([(1, 0), (0, 1), (-1, 0)])): 1,
+    tuple(sorted([(-1, 0), (0, 1)])): 2,
+    tuple(sorted([(-1, 0), (0, -1), (0, 1)])): 3,
+    tuple(sorted([(-1, 0), (0, -1)])): 4,
+    tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 5,
+    tuple(sorted([(1, 0), (0, -1)])): 6,
+    tuple(sorted([(1, 0), (0, -1), (0, 1)])): 7,
+    tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): 8,
+}
 
 
 class Tilemap:
@@ -70,9 +81,9 @@ class Tilemap:
                               (tile['pos'][0] * self.tile_size - offset[0],
                                tile['pos'][1] * self.tile_size - offset[1]))
 
-        if player_pos:
-            surf.blit(self.game.assets['player'][0], (self.player_pos[0] * self.tile_size - offset[0],
-                                                      self.player_pos[1] * self.tile_size - offset[1]))
+      #  if player_pos:
+          #  surf.blit(self.game.assets['player'][0], (self.player_pos[0] * self.tile_size - offset[0],
+           #                                           self.player_pos[1] * self.tile_size - offset[1]))
 
     def load(self, path):
         file = open(path)

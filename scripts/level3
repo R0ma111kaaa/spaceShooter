@@ -1,0 +1,12 @@
+import pygame
+
+class Level3:
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("SpaceShooter")
+        # the surface which user see
+        self.screen = pygame.display.set_mode()
+        # the surface on which the objects are drawn
+        self.display = pygame.Surface((480, 270))
+        self.clock = pygame.time.Clock()
+        self.running = True
