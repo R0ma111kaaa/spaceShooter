@@ -1,5 +1,6 @@
 import pygame
 
+from scripts.enscreen import Endscreen
 
 pygame.init()
 screen = pygame.display.set_mode()
@@ -10,17 +11,17 @@ BackGround = pygame.transform.scale(pygame.image.load("data/images/background.pn
 
 boss_health = pygame.transform.scale(pygame.image.load("data/images/entities/boss/Coin1.png"),
                                      (screen.get_width() * 0.05,
-                                       screen.get_height() * 0.05))
+                                      screen.get_height() * 0.05))
 
 player_health = pygame.transform.scale(pygame.image.load("data/images/entities/spaceship/player_health.png"),
                                        (screen.get_width() * 0.05,
                                         screen.get_height() * 0.05))
 
 Pacman = pygame.transform.scale(pygame.image.load("data/images/entities/boss/PacMan.png"),
-                                (screen.get_width() * 0.2,screen.get_height() * 0.2))
-
+                                (screen.get_width() * 0.4, screen.get_height() * 0.2))
 
 player_group = pygame.sprite.Group()
+
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self, screen, sheet, colums, rows, x, y):
@@ -44,6 +45,7 @@ class Boss(pygame.sprite.Sprite):
                 frame_location = (int(self.rect.w * i), int(self.rect.h * j))
                 self.frames.append(pygame.transform.flip(sheet.subsurface(pygame.Rect(
                     frame_location, self.rect.size)), True, False))
+
     def update(self):
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
@@ -72,10 +74,9 @@ class Boss(pygame.sprite.Sprite):
         #  bullet_group_ennemi.add(x)
 
 
-
 class Spaceship(pygame.sprite.Sprite):
     image = pygame.transform.scale(pygame.image.load("data/images/entities/spaceship/spaceship3.png"),
-                                   (screen.get_width() * 0.1,screen.get_height() * 0.1))
+                                   (screen.get_width() * 0.1, screen.get_height() * 0.1))
 
     def __init__(self, screen):
         # НЕОБХОДИМО вызвать конструктор родительского класса Sprite.
@@ -93,7 +94,7 @@ class Spaceship(pygame.sprite.Sprite):
         if mouvement == "up":
             self.rect.y = (self.rect.y - (self.screen.get_height() * 0.03)) % self.screen.get_height()
         elif mouvement == "down":
-            self.rect.y = (self.rect.y + (self.screen.get_height()* 0.03)) % self.screen.get_height()
+            self.rect.y = (self.rect.y + (self.screen.get_height() * 0.03)) % self.screen.get_height()
         elif mouvement == "left" and 0 <= self.rect.x + 10:
             self.rect.x -= self.screen.get_width() * 0.02
         elif mouvement == "right" and self.screen.get_width() >= self.rect.x + 10:
@@ -181,6 +182,7 @@ class Guided(pygame.sprite.Sprite):
 boss_group = pygame.sprite.Group()
 bullet_group_player = pygame.sprite.Group()
 bullet_group_ennemi = pygame.sprite.Group()
+end = pygame.sprite.Group()
 player = Spaceship(screen)
 last = 0
 coldown = 300
@@ -191,20 +193,22 @@ boss_group.add(boss)
 player_group.add(player)
 clock = pygame.time.Clock()
 running = True
-
+mouvement = 0
+flag = True
+count = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         mouvement = 0
         key = pygame.key.get_pressed()
-        if key[pygame.K_UP]:
+        if key[pygame.K_w]:
             mouvement = "up"
-        elif key[pygame.K_DOWN]:
+        elif key[pygame.K_s]:
             mouvement = "down"
-        elif key[pygame.K_LEFT]:
+        elif key[pygame.K_a]:
             mouvement = "left"
-        elif key[pygame.K_RIGHT]:
+        elif key[pygame.K_d]:
             mouvement = "right"
         if key[pygame.K_SPACE]:
             now = pygame.time.get_ticks()
@@ -226,8 +230,20 @@ while running:
     bullet_group_ennemi.update()
     player_group.update(mouvement)
     boss_group.update()
+    end.draw(screen)
+    end.update()
 
+    #  pygame.display.flip()
+    if boss.health <= 0 and flag:
+        end.add(Endscreen(screen, True))
+        flag = False
+    if player.health <= 0 and flag:
+        end.add(Endscreen(screen, False))
+        flag = False
+    if not flag:
+        count += 1
+        if count == 60:
+            running = False
     pygame.display.flip()
-    if boss.health == 0 or player.health == 0:
-        running = False
-pygame.quit()
+    clock.tick(60)
+

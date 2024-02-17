@@ -1,14 +1,19 @@
 import pygame
 import sys
+import sqlite3
+
+
 from game import Game
 
 pygame.init()
-Back_Ground = pygame.image.load("data/Design_menu/spacebackground.png")  # Back ground
+Back_Ground = pygame.image.load("data/Design_menu/spacebackground.png")  # Back groundwz
 screen = pygame.display.set_mode()
 main_font = pygame.font.Font("data/Design_menu/font.ttf", 45)
 Button_design = pygame.image.load("data/Design_menu/button2.png")
-#Winscreen = pygame.image.load("data/Design_menu/youwin.png")
-#dddddddddLostScreen = "add please not avalable"
+
+
+Winscreen = pygame.image.load("data/Design_menu/youwin.png")
+LostScreen = "add please not avalable"
 
 
 class Main_Menu:
@@ -21,10 +26,10 @@ class Main_Menu:
         self.button_surface = pygame.transform.scale(self.button_surface, (600, 200))
 
         self.start_bt = Button(self.button_surface, self.screen.get_width() // 2, 200, "Start Game", main_font)
-        self.level_editor_bt = Button(self.button_surface, self.screen.get_width() // 2, 400, "Level Editor", main_font)
-        self.help_bt = Button(self.button_surface, self.screen.get_width() // 2, 600, "Help", main_font)
-        self.quit_bt = Button(self.button_surface, self.screen.get_width() // 2, 800, "Exit", main_font)
-        self.button_group = [self.start_bt, self.help_bt, self.quit_bt, self.level_editor_bt]
+        #self.level_editor_bt = Button(self.button_surface, self.screen.get_width() // 2, 400, "Level Editor", main_font)
+        self.help_bt = Button(self.button_surface, self.screen.get_width() // 2, 400, "Help", main_font)
+        self.quit_bt = Button(self.button_surface, self.screen.get_width() // 2, 600, "Exit", main_font)
+        self.button_group = [self.start_bt, self.help_bt, self.quit_bt, ] # self.level_editor_bt
         # конец design
         exit = True
         while exit:
@@ -53,14 +58,20 @@ class Main_Menu:
 
     def level_select(self):
         # design
-        level_bt_design = pygame.image.load("data/Design_menu/level_button.png")  # design кнопки для уровня
-        level_bt_design = pygame.transform.scale(level_bt_design, (300, 300))
-        level1_bt = Button(level_bt_design, int(self.screen.get_width() * 0.3), 250, "level 1", main_font)
+        level_bt_design = pygame.image.load("data/Design_menu/level_button.png")
+        level_clear = pygame.transform.scale(pygame.image.load("data/Design_menu/level_button.png"), (500, 500))
+        level_bt_design = pygame.transform.scale(level_bt_design, (500, 500))
+        level1_bt = Button(level_bt_design, int(self.screen.get_width() * 0.2), 250, "level 1", main_font)
         level2_bt = Button(level_bt_design, int(self.screen.get_width() * 0.5), 250, "level 2", main_font)
         level3_bt = Button(level_bt_design, int(self.screen.get_width() * 0.8), 250, "level 3", main_font)
         exit = Button(level_bt_design, self.screen.get_width() // 2, int(self.screen.get_height() * 0.9), "exit",
                       main_font)
         level_bt_group = [level1_bt, level2_bt, level3_bt, exit]
+        data = []
+        con = sqlite3.connect("Level.db")
+        cur = con.cursor()
+        result = cur.execute('''Select help From Pass''').fetchall()
+        con.close()
         # end design
         exit2 = True
         while exit2:
@@ -71,11 +82,13 @@ class Main_Menu:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if level1_bt.checkForInput(pygame.mouse.get_pos()):
-                        Game().run()
-
-                    level2 = level2_bt.checkForInput(pygame.mouse.get_pos())
-                    level3 = level3_bt.checkForInput(pygame.mouse.get_pos())
-                    exit2 = not exit.checkForInput(pygame.mouse.get_pos())
+                        Game(0).run()
+                    if level2_bt.checkForInput(pygame.mouse.get_pos()):
+                        Game(1).run()
+                    if level3_bt.checkForInput(pygame.mouse.get_pos()):
+                        import level3
+                    if exit.checkForInput(pygame.mouse.get_pos()):
+                        exit2 = False  # not exit.checkForInput(pygame.mouse.get_pos())
             for buttons in level_bt_group:
                 buttons.update()
                 buttons.changeColor(pygame.mouse.get_pos())
@@ -85,8 +98,9 @@ class Main_Menu:
         # design
         text1 = main_font.render("Movement: W A S D", True,
                                  (255, 255, 255))  # ["Movement:  W A S D", "Shoot: Space Bar"]
-        text2 = main_font.render("Shoot: Space Bar", True, (255, 255, 255))
-        text = [text1, text2]
+        text2 = main_font.render("Dash: space bar", True, (255, 255, 255))
+        text3 = main_font.render("Goal: kill all enemies", True, (255, 255, 255))
+        text = [text1, text2, text3]
         exit = Button(self.button_surface, self.screen.get_width() // 2, int(self.screen.get_height() * 0.9), "exit",
                       main_font)
         # end design
@@ -146,38 +160,7 @@ class Button:
             self.text = main_font.render(self.text_input, True, "white")
 
 
-all_sprites = pygame.sprite.Group()
-
-
-class Endscreen(pygame.sprite.Sprite):
-    def __init__(self, screen, image):
-        super().__init__(all_sprites)
-        self.screen = screen
-        self.image = pygame.transform.scale(image, (screen.get_width(), screen.get_width()))
-        self.rect = self.image.get_rect()
-        self.rect_x = - self.image.get_width()
-
-    def update(self):
-        if self.rect_x < screen.get_width():
-            self.rect = self.rect.move(200 // 60, 0)
 
 
 if __name__ == '__main__':
     Main_Menu(screen, Back_Ground, Button_design)
-
-# all_sprites = pygame.sprite.Group()
-
-# class Endscreen(pygame.sprite.Sprite):
-# image = load_image("gameover.png")
-
-# def __init__(self):
-#   super().__init__(all_sprites)
-# all_sprites.add(self)
-#  self.image = pygame.transform.scale(Endscreen.image, (600, 300))
-#   self.rect = self.image.get_rect()
-#  self.mask = pygame.mask.from_surface(self.image)
-#   self.rect.x = -600
-#   self.rect.y = 0
-#  def update(self):
-#       if self.rect.x <= -3:
-#    self.rect = self.rect.move(200//60 , 0)

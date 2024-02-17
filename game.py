@@ -1,4 +1,3 @@
-import sys
 import random
 import math
 
@@ -9,10 +8,11 @@ from scripts.tilemap import Tilemap
 from scripts.utils import load_image, load_images, Animation
 from scripts.particle import Particle
 from scripts.spark import Spark
+from scripts.enscreen import Endscreen
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, level):
         pygame.init()
         pygame.display.set_caption("SpaceShooter")
         # the surface which user see
@@ -21,6 +21,8 @@ class Game:
         self.display = pygame.Surface((480, 270))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.count = 0
+        self.flag = True
 
         #  x-axis movement in a particular frame
         self.movement = [False, False]
@@ -52,11 +54,12 @@ class Game:
         }
         self.player = Player(self, ((50, 50)), (8, 15))
         self.tilemap = Tilemap(self)
-        self.load_level(0)
+        self.load_level(level)
+        self.end = pygame.sprite.Group()
 
     def load_level(self, map_id):
 
-        self.tilemap.load(f'map.json')
+        self.tilemap.load(f'data/maps/{map_id}.json')
 
         self.enemies = []
         for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1)]):
@@ -75,9 +78,12 @@ class Game:
             self.display.blit(pygame.transform.scale(self.assets['background'], self.display.get_size()), (0, 0))
 
             if self.death:
+                if self.death == 1  :
+                   self.end.add(Endscreen(self.screen, False))
                 self.death += 1
-                if self.death > 40:
-                    sys.exit()
+                self.flag = False
+                if self.death > 140:
+                    self.running = False
 
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
@@ -134,8 +140,6 @@ class Game:
                 if kill:
                     self.particles.remove(particle)
 
-            # self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            # self.player.render(self.display, render_scroll)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -154,12 +158,21 @@ class Game:
                         self.movement[0] = False
                     elif event.key == pygame.K_d:
                         self.movement[1] = False
-
-            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+            if not len(self.enemies):
+                if self.count == 0:
+                    self.end.add(Endscreen(self.screen, True))
+                    self.flag = False
+                self.count += 1
+                if self.count >= 130:
+                    self.running = False
+            if self.flag:
+                self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+            else:
+                self.end.draw(self.screen)
+                self.end.update()
             pygame.display.update()
             self.clock.tick(self.fps)
-        pygame.quit()
 
 
 if __name__ == '__main__':
-    Game().run()
+    Game(0).run()

@@ -42,7 +42,7 @@ class Editor:
 
         self.tilemap = Tilemap(self)
         try:
-            self.tilemap.load('map.json')
+            self.tilemap.load('shit.json')
         except FileNotFoundError:
             pass
 
@@ -114,7 +114,7 @@ class Editor:
                     elif event.key == pygame.K_LSHIFT:
                         self.shift = True
                     elif event.key == pygame.K_o:
-                        self.tilemap.save('map.json')
+                        self.tilemap.save('shit.json')
                     elif event.key == pygame.K_t:
                         self.tilemap.autotile()
                         print(f'tilepos: {tile_pos[0] * self.tilemap.tile_size, tile_pos[1] * self.tilemap.tile_size}')
