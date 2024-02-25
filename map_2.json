@@ -297,8 +297,8 @@
       ]
     },
     "10;8": {
-      "type": "decor",
-      "variant": 2,
+      "type": "spawners",
+      "variant": 0,
       "pos": [
         10,
         8
@@ -705,14 +705,6 @@
       "pos": [
         166.0,
         24.0
-      ]
-    },
-    {
-      "type": "spawners",
-      "variant": 0,
-      "pos": [
-        78.0,
-        111.5
       ]
     },
     {

@@ -5,7 +5,7 @@ from scripts.utils import load_images
 
 
 class Editor:
-    def __init__(self):
+    def __init__(self, level_num=1):
         pygame.init()
         pygame.display.set_caption("TileEditor")
         # the surface which user see
@@ -26,11 +26,11 @@ class Editor:
         self.scroll = [0, 0]
 
         self.assets = {
-            'player': load_images('tiles/player'),
-            'grass': load_images('tiles/grass'),
-            'stone': load_images('tiles/stone'),
             'decor': load_images('tiles/decor'),
+            'grass': load_images('tiles/grass'),
             'large_decor': load_images('tiles/large_decor'),
+            'stone': load_images('tiles/stone'),
+            'spawners': load_images('tiles/spawners'),
         }
         self.tiles = list(self.assets)
         self.tile_group = 0
@@ -40,9 +40,16 @@ class Editor:
         self.clicking = False
         self.right_clicking = False
 
+        if level_num == 1:
+            self.level = "map.json"
+        elif level_num == 2:
+            self.level = "map_2.json"
+        elif level_num == 3:
+            self.level = "map_3.json"
+
         self.tilemap = Tilemap(self)
         try:
-            self.tilemap.load('map.json')
+            self.tilemap.load(self.level)
         except FileNotFoundError:
             pass
 
@@ -53,7 +60,7 @@ class Editor:
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
             self.display.fill('black')
-            self.tilemap.render(self.display, render_scroll, player_pos=True)
+            self.tilemap.render(self.display, render_scroll)
 
             # current tile at mouse position
             current_img = self.assets[self.tiles[self.tile_group]][self.tile_variant].copy()
@@ -70,23 +77,27 @@ class Editor:
                 self.display.blit(current_img, mpos)
 
             if self.clicking and self.ongrid:
-                if self.tiles[self.tile_group] == 'player':
-                    self.tilemap.player_pos = tile_pos
-                    self.tilemap.tilemap.pop(str(tile_pos[0]) + ';' + str(tile_pos[1]), None)
-                elif tile_pos != self.tilemap.player_pos:
-                    self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {
-                        'type': self.tiles[self.tile_group],
-                        'variant': self.tile_variant,
-                        'pos': tile_pos
-                    }
+                self.tilemap.tilemap[str(tile_pos[0]) + ';' + str(tile_pos[1])] = {
+                    'type': self.tiles[self.tile_group], 'variant': self.tile_variant, 'pos': tile_pos}
             if self.right_clicking:
-                self.tilemap.tilemap.pop(str(tile_pos[0]) + ';' + str(tile_pos[1]), None)
+                tile_loc = str(tile_pos[0]) + ';' + str(tile_pos[1])
+                if tile_loc in self.tilemap.tilemap:
+                    del self.tilemap.tilemap[tile_loc]
                 for tile in self.tilemap.offgrid_tiles.copy():
-                    img = self.assets[tile['type']][tile['variant']]
+                    tile_img = self.assets[tile['type']][tile['variant']]
                     tile_r = pygame.Rect(tile['pos'][0] - self.scroll[0], tile['pos'][1] - self.scroll[1],
-                                         img.get_width(), img.get_height())
+                                         tile_img.get_width(), tile_img.get_height())
                     if tile_r.collidepoint(mpos):
                         self.tilemap.offgrid_tiles.remove(tile)
+
+            #   if self.right_clicking:
+            #    self.tilemap.tilemap.pop(str(tile_pos[0]) + ';' + str(tile_pos[1]), None)
+            #    for tile in self.tilemap.offgrid_tiles.copy():
+            #     img = self.assets[tile['type']][tile['variant']]
+            #     tile_r = pygame.Rect(tile['pos'][0] - self.scroll[0], tile['pos'][1] - self.scroll[1],
+            #                     img.get_width(), img.get_height())
+            #   if tile_r.collidepoint(mpos):
+            #     self.tilemap.offgrid_tiles.remove(tile)
 
             # current tile in top left corner
             top_left_img = current_img.copy()
@@ -110,7 +121,7 @@ class Editor:
                     elif event.key == pygame.K_LSHIFT:
                         self.shift = True
                     elif event.key == pygame.K_o:
-                        self.tilemap.save('map.json')
+                        self.tilemap.save(self.level)
                     elif event.key == pygame.K_t:
                         self.tilemap.autotile()
                         print(f'tilepos: {tile_pos[0] * self.tilemap.tile_size, tile_pos[1] * self.tilemap.tile_size}')
@@ -160,6 +171,3 @@ class Editor:
             pygame.display.update()
         pygame.quit()
 
-
-if __name__ == '__main__':
-    Editor().run()
