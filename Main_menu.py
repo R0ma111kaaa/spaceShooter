@@ -1,10 +1,10 @@
 import pygame
 import sys
-import sqlite3
+
 
 
 from game import Game
-
+from level3 import start_level3
 pygame.init()
 Back_Ground = pygame.image.load("data/Design_menu/spacebackground.png")  # Back groundwz
 screen = pygame.display.set_mode()
@@ -12,8 +12,7 @@ main_font = pygame.font.Font("data/Design_menu/font.ttf", 45)
 Button_design = pygame.image.load("data/Design_menu/button2.png")
 
 
-Winscreen = pygame.image.load("data/Design_menu/youwin.png")
-LostScreen = "add please not avalable"
+
 
 
 class Main_Menu:
@@ -67,11 +66,6 @@ class Main_Menu:
         exit = Button(level_bt_design, self.screen.get_width() // 2, int(self.screen.get_height() * 0.9), "exit",
                       main_font)
         level_bt_group = [level1_bt, level2_bt, level3_bt, exit]
-        data = []
-        con = sqlite3.connect("Level.db")
-        cur = con.cursor()
-        result = cur.execute('''Select help From Pass''').fetchall()
-        con.close()
         # end design
         exit2 = True
         while exit2:
@@ -86,7 +80,7 @@ class Main_Menu:
                     if level2_bt.checkForInput(pygame.mouse.get_pos()):
                         Game(1).run()
                     if level3_bt.checkForInput(pygame.mouse.get_pos()):
-                        import level3
+                        start_level3()
                     if exit.checkForInput(pygame.mouse.get_pos()):
                         exit2 = False  # not exit.checkForInput(pygame.mouse.get_pos())
             for buttons in level_bt_group:
